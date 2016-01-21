@@ -32,3 +32,5 @@ db['motiejunas'] = motiejunas
 db['terry'] = terry
 db['thorton'] = thorton
 db.close()
+
+print 'Run successfully!'
