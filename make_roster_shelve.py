@@ -1,6 +1,8 @@
 from player import Player
 import shelve
-
+'''
+Rocktes
+'''
 ariza = Player('Trevor Ariza', 2772)
 beverly = Player('Patrick Beverly', 201976)
 brewer = Player('Corey Brewer', 201147)
@@ -31,6 +33,12 @@ db['mcdaniels'] = mcdaniels
 db['motiejunas'] = motiejunas
 db['terry'] = terry
 db['thorton'] = thorton
-db.close()
 
+'''
+Golden State Warriors
+'''
+curry = Player('Stephen Curry', 201939)
+db['curry'] = curry
+
+db.close()
 print 'Run successfully!'
