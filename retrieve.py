@@ -12,8 +12,6 @@ from court import Draw_court
 from visualize import Visualize, HeatMap
 import re
 
-#%matplotlib inline
-
 # open the shelve that stored the player-id pair
 db = shelve.open('HRroster-shelve')
 
@@ -30,33 +28,89 @@ except:
 season_raw = raw_input('Season (in yyyy format):\n==>')
 # TODO: check season format with regex
 # try:
-# 	^[12][0-9].+?
+# 	^2\d{3}|19\d{2}.+?
 # except:
 #	print 'Wrong season input!'
 season = season_raw+'-'+str((int(season_raw)+1))[-2:]
 
 # use the input content to compose the url
-url = ('http://stats.nba.com/stats/shotchartdetail?CFID=33&'
-	   'CFPARAMS=%s&'
-	   'ContextFilter=&ContextMeasure=FGA&DateFrom=&DateTo=&GameID=&'
-	   'GameSegment=&LastNGames=0&LeagueID=00&Location=&'
-	   'MeasureType=Base&'
-	   'Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&'
-	   'PerMode=PerGame&Period=0&'
-	   'PlayerID=%s&'
-	   'PlusMinus=N&Position=&Rank=N&RookieYear=&'
-	   'Season=%s&SeasonSegment=&SeasonType=Regular+Season&TeamID=0&'
-	   'VsConference=&VsDivision=&mode=Advanced&showDetails=0&'
-	   'showShots=1&showZones=0' %(season, db[input_name].ID, season))
+
+# url = ('http://stats.nba.com/stats/shotchartdetail?'
+# 	   'CFID=33&'
+# 	   'CFPARAMS=%s&'
+# 	   'ContextFilter=&'
+# 	   'ContextMeasure=FGA&'
+# 	   'DateFrom=&'
+# 	   'DateTo=&'
+# 	   'GameID=&'
+# 	   'GameSegment=&'
+# 	   'LastNGames=0&'
+# 	   'LeagueID=00&'
+# 	   'Location=&'
+# 	   'MeasureType=Base&'
+# 	   'Month=0&'
+# 	   'OpponentTeamID=0&'
+# 	   'Outcome=&'
+# 	   'PaceAdjust=N&'
+# 	   'PerMode=PerGame&'
+# 	   'Period=0&'
+# 	   'PlayerID=%s&'
+# 	   'PlusMinus=N&'
+# 	   'Position=&'
+# 	   'Rank=N&'
+# 	   'RookieYear=&'
+# 	   'Season=%s&'
+# 	   'SeasonSegment=&'
+# 	   'SeasonType=Regular+Season&'
+# 	   'TeamID=0&'
+# 	   'VsConference=&'
+# 	   'VsDivision=&'
+# 	   'mode=Advanced&'
+# 	   'showDetails=0&'
+# 	   'showShots=1&'
+# 	   'showZones=0' %(season, db[input_name].ID, season))
 
 
-# params = {'CFPARAMS': season, 'ContextFilter':''}
+url = 'http://stats.nba.com/stats/shotchartdetail'
+params = {'CFID': 33, 
+		  'CFPARAMS': season_raw+'-'+str((int(season_raw)+1))[-2:],
+		  'ContextFilter':'',
+		  'ContextMeasure':'FGA',  # ^((FGM)|(FGA)|(FG_PCT)|(FG3M)|(FG3A)|(FG3_PCT)|(PF)|(EFG_PCT)|(TS_PCT)|(PTS_FB)|(PTS_OFF_TOV)|(PTS_2ND_CHANCE)|(PF))?$
+		  'DateFrom':'',
+		  'DateTo':'',
+		  'GameID':'',
+		  'GameSegment':'', #First Half| Overtime | Second Half
+		  'LastNGames':0,
+		  'LeagueID':'',
+		  'Location':'',  # 'Home' or 'Road'
+		  'MeasureType':'Base',
+		  'Month': 0,   # 0-12
+		  'OpponentTeamID': 0,   # 0 or id of the team
+		  'Outcome':'',
+		  'PaceAdjust':'N',
+		  'PerMode': 'PerGame',
+		  'Period':0,   # 0-14
+		  'PlayerID': db[input_name].ID,
+		  'PlusMinus':'N',
+		  'Position':'',   # Guard|Center|Foward
+		  'Rank': 'N',
+		  'RookieYear': '',
+		  'Season': season,   # in ^/d{4}-/d{2}?$ format
+		  'SeasonSegment': '',   # 'Post All-Star'| 'Pre All-Star'
+		  'SeasonType': 'Regular Season',
+		  'TeamID':0,
+		  'VsConference':'',   # 'East'|'West'
+		  'VsDivision':'', # Atlantic|Central|Northwest|Pacific|Southeast|Southwest|East|West
+		  'mode': 'Advanced',
+		  'showDetails':0,
+		  'showShots':1,
+		  'showZones':0}
 
 # fetch data using the requests module
-# response = requests.get(url, params)
-response = requests.get(url)
-response.raise_for_status()
-response.json()
+response = requests.get(url, params)
+# response = requests.get(url)
+# response.raise_for_status()
+# response.json()
 # create a pandas dataframe from the returned json file
 headers = response.json()['resultSets'][0]['headers']
 shots = response.json()['resultSets'][0]['rowSet']
@@ -83,8 +137,8 @@ Visualize(made.LOC_X, made.LOC_Y,
 	      pic = player_pic,
 	      name = input_name,
 	      season_str = season)
-HeatMap(shot_df.LOC_X, shot_df.LOC_Y,
-		pic = player_pic,
-	    name = input_name,
-	    season_str = season)
+# HeatMap(shot_df.LOC_X, shot_df.LOC_Y,
+# 		pic = player_pic,
+# 	    name = input_name,
+# 	    season_str = season)
 

@@ -18,6 +18,12 @@ motiejunas = Player('Donatas Motiejunas', 202700)
 terry = Player('Jason Terry', 1891)
 thorton = Player('Marcus Thorton', 201977)
 
+'''
+Golden State Worriors
+'''
+curry = Player('Stephen Curry', 201939)
+
+
 db = shelve.open('HRroster-shelve')
 db['ariza'] = ariza
 db['beverly'] = beverly
@@ -34,10 +40,7 @@ db['motiejunas'] = motiejunas
 db['terry'] = terry
 db['thorton'] = thorton
 
-'''
-Golden State Warriors
-'''
-curry = Player('Stephen Curry', 201939)
+
 db['curry'] = curry
 
 db.close()
